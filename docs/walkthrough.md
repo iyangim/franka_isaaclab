@@ -81,3 +81,31 @@ We verified the fixes by running the training pipeline:
    * **`agent.yaml`, `agent.pkl`**: 학습 진행 당시의 PPO 알고리즘 하이퍼파라미터 설정 백업본
 3. **`events.out.tfevents.*` 파일**:
    * TensorBoard를 통해 시각화할 수 있는 로그 파일 (보상 곡선, 손실 수치 기록 데이터)
+
+
+---
+
+### 4. 🛠️ `play.py` 실행 시 발생한 오류 원인 및 해결 요약
+
+`scripts/skrl/play.py`를 실행했을 때 발생한 오류들과 이를 해결한 과정에 대한 정리입니다.
+
+#### 1) 오류 원인 및 해결법 (Why & How)
+
+| 오류 메시지 | 발생 원인 | 해결 방법 |
+| :--- | :--- | :--- |
+| **`ModuleNotFoundError: No module named 'isaaclab.utils.pretrained_checkpoint'`** | 이전 템플릿 코드는 사전 학습 모델 유틸리티를 `isaaclab.utils`에서 가져오려 했으나, 실제 설치된 Isaac Lab 구조상 강화학습 라이브러리는 `isaaclab_rl.utils` 하위에 위치함 | `from isaaclab_rl.utils.pretrained_checkpoint import ...`로 패키지 임포트 경로 수정 |
+| **`AttributeError: 'PPO' object has no attribute 'set_running_mode'`** | 환경에 설치된 `skrl` 라이브러리의 버전은 `2.1.0` (v2.x)인 반면, 기존 코드는 `skrl v1.x` 기준 메서드(`set_running_mode`)를 사용하고 있었음 | `skrl v2.x` API 규격에 맞게 `runner.agent.enable_training_mode(False)`로 메서드 변경 |
+| **`TypeError: PPO.act() missing 1 required positional argument: 'states'`** | `skrl v2.x` 버전부터 `act` 메서드가 Privileged State 데이터(`states`)를 필수 위치 인자(두 번째 인자)로 받도록 함수 시그니처가 변경됨 | `runner.agent.act(obs, None, timestep=0, timesteps=0)` 형태로 `states` 위치에 `None`을 명시적으로 인가함 |
+
+---
+
+#### 2) 향후 동일 오류 재발 방지책 (Prevention)
+* **라이브러리 버전 고정 (Pinning)**: 코드 실행 환경이 다른 머신이나 새로운 환경으로 이전될 때, 호환되는 외부 패키지의 메이저 버전을 명시하여 설치해야 합니다. (예: `skrl==1.4.3` 또는 `skrl>=2.1.0` 등을 `requirements.txt`에 명시)
+* **스크립트 소스 출처 일관성**: 외부 소스코드 혹은 다른 템플릿 저장소의 코드를 그대로 가져오기보다는, 현재 설치하여 로드하고 있는 로컬 서브모듈인 `third_party/IsaacLab/scripts/reinforcement_learning/skrl/play.py` 버전의 템플릿을 베이스라인으로 복사하여 프로젝트에 구성하는 것이 안전합니다.
+
+---
+
+#### 3) 처음 환경 설정 시 근본적인 해결 방안 (Root Resolution)
+* **의존성 설치 스크립트 검토**: Isaac Lab을 초기 빌드 및 셋업할 때, `setup.py` 또는 `pyproject.toml` 등에 정의된 학습 래퍼 및 에이전트 라이브러리(`skrl`, `rsl_rl`, `rl_games` 등)가 현재 시뮬레이터 버전 개발 환경에서 완벽히 검증된 타깃 버전을 고정하여 설치되도록 `pip install` 단계를 조율해야 합니다.
+* **서브모듈 싱크 유지**: 외부 템플릿 프로젝트를 복제(Clone)하여 설정할 경우, `third_party/IsaacLab` 등 서브모듈 폴더에 명시된 커밋 해시(Commit Hash)와 에이전트 라이브러리(`skrl` 등)가 동일한 배포 버전 주기를 따르는지 빌드 로그 및 `git submodule status`로 사전 싱크 여부를 체크하는 것이 좋습니다.
+
