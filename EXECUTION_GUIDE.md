@@ -137,6 +137,105 @@ cd ~/franka_isaaclab
     --checkpoint=logs/skrl/reach_franka/*/checkpoints/best_agent.pt
 ```
 
+'''
+Ran command: 
+
+(doosan_env) iyangim@user-Vector-16-HX-AI-A2XWIG:~$ gcloud auth login && gcloud auth application-default login
+
+
+Yes, I remember the commands we used in the previous session:
+
+### 1. Training Commands
+To start reinforcement learning training using the simulation-specific Python interpreter:
+* **Reach Task**:
+  ```bash
+  ~/smart-shelf-robot/third_party/IsaacLab/_isaac_sim/python.sh scripts/skrl/train.py --task=Template-Reach-v0
+  ```
+* **Lift Task**:
+  ```bash
+  ~/smart-shelf-robot/third_party/IsaacLab/_isaac_sim/python.sh scripts/skrl/train.py --task=Template-Lift-v0
+  ```
+* **Stack Task**:
+  ```bash
+  ~/smart-shelf-robot/third_party/IsaacLab/_isaac_sim/python.sh scripts/skrl/train.py --task=Template-Stack-v0
+  ```
+
+### 2. Play / Evaluation Commands
+To run and visualize the trained agent from a checkpoint:
+```bash
+~/smart-shelf-robot/third_party/IsaacLab/_isaac_sim/python.sh scripts/skrl/play.py --task=Template-Reach-Play-v0 --checkpoint=logs/skrl/reach_franka/*/checkpoints/best_agent.pt
+```
+
+### 3. Dependency Installation Command
+To install dependencies directly to the Isaac Sim environment:
+```bash
+~/smart-shelf-robot/third_party/IsaacLab/_isaac_sim/python.sh -m pip install hydra-core
+```
+
+Which of these commands would you like to run or modify now?
+
+'''
+Ran command: `find . -maxdepth 4 -name "*.pt"`
+
+Ran command: `find logs/ -name "*.pt"`
+
+Ran command: `find logs/ -mmin -120`
+
+Ran command: `ps aux | grep train.py`
+
+Listed directory iyangim
+
+Ran command: `tail -n 100 ~/.bash_history`
+
+Ran command: `date`
+
+Ran command: `find logs/ -type f -exec ls -lt {} + | head -n 30`
+
+Ran command: `find . -not -path '*/.git/*' -type f -mmin -60`
+
+Ran command: `find /tmp -name "*isaaclab*" -mmin -120 2>/dev/null`
+
+Ran command: `ls -la /tmp/isaaclab/logs/ 2>/dev/null || echo "Not found"`
+
+Viewed train.py:1-237
+
+Viewed skrl_ppo_cfg.yaml:1-85
+
+
+We have found the training results from your run in the workspace under `logs/skrl/reach_franka/`:
+
+### 📊 Training Run: `2026-06-17_19-15-47_ppo_torch`
+* **Status**: **Completed Successfully**
+* **Total Timesteps**: **24,000** (as configured in `skrl_ppo_cfg.yaml`)
+* **Saved Checkpoints**:
+  * Final Checkpoint: `logs/skrl/reach_franka/2026-06-17_19-15-47_ppo_torch/checkpoints/agent_24000.pt`
+  * Best Checkpoint: `logs/skrl/reach_franka/2026-06-17_19-15-47_ppo_torch/checkpoints/best_agent.pt`
+
+---
+
+### 1. How to Visualize the Trained Agent (Play)
+You can play and visualize the behavior of the trained agent in the simulator using the following command:
+```bash
+~/smart-shelf-robot/third_party/IsaacLab/_isaac_sim/python.sh scripts/skrl/play.py \
+    --task=Template-Reach-Play-v0 \
+    --checkpoint=logs/skrl/reach_franka/2026-06-17_19-15-47_ppo_torch/checkpoints/best_agent.pt
+```
+
+### 2. How to Monitor Training Metrics (TensorBoard)
+To view the training graphs (cumulative rewards, learning rate scheduler updates, policy loss, etc.):
+```bash
+tensorboard --logdir=logs/skrl/
+```
+Then open your browser and navigate to `http://localhost:6006`.
+
+---
+
+### 🔍 Did you run a different task?
+If you ran the `train.py` command for **Lift** (`Template-Lift-v0`) or **Stack** (`Template-Stack-v0`) tasks just now, we do not see new log directories under `logs/skrl` for them yet. 
+
+If the script failed, stopped early, or showed an error in your terminal, please paste the terminal output here so we can help troubleshoot!
+
+
 ---
 
 ### 🟡 Task 2: Lift (큐브 집어 올리기)
