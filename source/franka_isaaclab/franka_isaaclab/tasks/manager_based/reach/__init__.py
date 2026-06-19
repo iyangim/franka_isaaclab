@@ -31,3 +31,23 @@ gym.register(
         "skrl_cfg_entry_point": f"{agents.__name__}:skrl_ppo_cfg.yaml",
     },
 )
+
+gym.register(
+    id="Template-Doosan-Reach-v0",
+    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+    disable_env_checker=True,
+    kwargs={
+        "env_cfg_entry_point": f"{__name__}.doosan_joint_pos_env_cfg:DoosanReachEnvCfg",
+        "skrl_cfg_entry_point": f"{agents.__name__}:doosan_skrl_ppo_cfg.yaml",
+    },
+)
+
+gym.register(
+    id="Template-Doosan-Reach-Play-v0",
+    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+    disable_env_checker=True,
+    kwargs={
+        "env_cfg_entry_point": f"{__name__}.doosan_joint_pos_env_cfg:DoosanReachEnvCfg_PLAY",
+        "skrl_cfg_entry_point": f"{agents.__name__}:doosan_skrl_ppo_cfg.yaml",
+    },
+)
