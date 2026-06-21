@@ -47,7 +47,7 @@ def cubes_stacked(
     # Check cube positions
     stacked = xy_dist_c12 < xy_threshold
     stacked = torch.logical_and(h_dist_c12 - height_diff < height_threshold, stacked)
-    stacked = torch.logical_and(pos_diff_c12[:, 2] < 0.0, stacked)
+    stacked = torch.logical_and(pos_diff_c12[:, 2] > 0.0, stacked)
 
     # Check gripper positions
     if hasattr(env.scene, "surface_grippers") and len(env.scene.surface_grippers) > 0:

@@ -238,8 +238,8 @@ def cube_poses_in_base_frame(
         root_pos_w, root_quat_w, pos_cube_2_world, quat_cube_2_world
     )
 
-    pos_cubes_base = torch.cat((pos_cube_1_base, pos_cube_2_base, pos_cube_3_base), dim=1)
-    quat_cubes_base = torch.cat((quat_cube_1_base, quat_cube_2_base, quat_cube_3_base), dim=1)
+    pos_cubes_base = torch.cat((pos_cube_1_base, pos_cube_2_base), dim=1)
+    quat_cubes_base = torch.cat((quat_cube_1_base, quat_cube_2_base), dim=1)
 
     if return_key == "pos":
         return pos_cubes_base
